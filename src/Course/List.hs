@@ -134,6 +134,8 @@ map ::
 map _ Nil = Nil
 map f (x :. xs) = f x :. map f xs
 
+--TODO: can I make this a non-recursive process with foldRight?
+
 -- | Return elements satisfying the given predicate.
 --
 -- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
@@ -188,8 +190,7 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten = foldLeft (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -205,8 +206,7 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap f xs = flatten $ map f xs
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -215,8 +215,7 @@ flatMap =
 flattenAgain ::
   List (List a)
   -> List a
-flattenAgain =
-  error "todo: Course.List#flattenAgain"
+flattenAgain = flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -243,8 +242,13 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional l
+  | anyEmpty l = Empty
+  | otherwise = Full $ map (\(Full x) -> x) l
+  where
+    anyEmpty Nil = False
+    anyEmpty (Empty:._) = True
+    anyEmpty (_ :. xs) = anyEmpty xs
 
 -- | Find the first element in the list matching the predicate.
 --
