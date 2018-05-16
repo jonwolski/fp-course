@@ -270,8 +270,8 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find =
-  error "todo: Course.List#find"
+find p l = headOr Empty $ map Full $ filter p l
+
 
 -- | Determine if the length of the given list is greater than 4.
 --
