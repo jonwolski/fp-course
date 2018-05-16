@@ -289,8 +289,10 @@ find p l = headOr Empty $ map Full $ filter p l
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 ( _1:._2:._3:._4:._5:._) = True
+lengthGT4 _ = False
+
+
 
 -- | Reverse a list.
 --
