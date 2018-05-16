@@ -244,11 +244,13 @@ seqOptional ::
   -> Optional (List a)
 seqOptional l
   | anyEmpty l = Empty
-  | otherwise = Full $ map (\(Full x) -> x) l
+  | otherwise = Full $ map unwrap l
   where
     anyEmpty Nil = False
     anyEmpty (Empty:._) = True
     anyEmpty (_ :. xs) = anyEmpty xs
+    unwrap (Full x) = x
+    unwrap Empty = error "unreachable"
 
 -- | Find the first element in the list matching the predicate.
 --
