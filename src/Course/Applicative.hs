@@ -350,7 +350,7 @@ replicateA ::
   Int
   -> f a
   -> f (List a)
-replicateA n f_a = lift1 (replicate n) f_a
+replicateA n = sequence . replicate n
 
 
 -- | Filter a list with a predicate that produces an effect.
@@ -378,11 +378,12 @@ filtering ::
   (a -> f Bool)
   -> List a
   -> f (List a)
-filtering _ Nil = pure Nil
-filtering p (x :. xs)
-  | True  = lift2 (:.) ( pure x ) $ filtering p xs
-  | otherwise = filtering p xs
---  where isTrue p = lift1 id p
+--filtering _ Nil = pure Nil
+--filtering p (x :. xs)
+--  | True  = lift2 (:.) ( pure x ) $ filtering p xs
+--  | otherwise = filtering p xs
+filtering p =
+  foldRight (\a -> lift2 (\b -> if b then (a:.) else id) (p a)) (pure Nil)
 
 -----------------------
 -- SUPPORT LIBRARIES --
